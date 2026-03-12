@@ -1,10 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-
-type Task = {
-  completed: boolean;
-  id: string;
-  title: string;
-};
+import Tasks from "./components/Tasks";
 
 type TimerMode = "work" | "break" | "longBreak";
 
@@ -126,82 +121,6 @@ function Timer({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-function Tasks() {
-  const [input, setInput] = useState("");
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  function onSaveTask() {
-    if (!input.trim()) return;
-    setTasks([
-      ...tasks,
-      { completed: false, id: crypto.randomUUID(), title: input },
-    ]);
-    setInput("");
-  }
-
-  function completeTask({ id }: Task) {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
-    );
-  }
-
-  function deleteTask({ id }: Task) {
-    setTasks(tasks.filter((task) => task.id !== id));
-  }
-
-  return (
-    <div className="max-w-md mx-auto px-4">
-      <div className="flex gap-2 mb-6">
-        <input
-          className="flex-1 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/40"
-          placeholder="Add a task..."
-          type="text"
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSaveTask()}
-        />
-        <button
-          className="px-5 py-3 bg-white text-slate-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-          onClick={onSaveTask}
-        >
-          Add
-        </button>
-      </div>
-
-      <ul className="space-y-2">
-        {tasks.map((task) => (
-          <li
-            className={`flex items-center justify-between p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors ${
-              task.completed ? "opacity-50" : ""
-            }`}
-            key={task.id}
-          >
-            <span
-              className={`flex-1 ${
-                task.completed ? "line-through text-white/50" : ""
-              }`}
-              onClick={() => completeTask(task)}
-            >
-              {task.title}
-            </span>
-            <button
-              className="text-white/30 hover:text-red-400 px-2"
-              onClick={() => deleteTask(task)}
-            >
-              ×
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {tasks.length === 0 && (
-        <p className="text-white/30 text-center py-8">No tasks yet</p>
-      )}
-    </div>
-  );
-}
 
 export default function Pomodoro() {
   const [key, setKey] = useState(0);
